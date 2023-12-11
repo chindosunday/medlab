@@ -28,14 +28,6 @@
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet" />
-
-  <!-- =======================================================
-  * Template Name: Medilab
-  * Updated: Sep 18 2023 with Bootstrap v5.3.2
-  * Template URL: https://bootstrapmade.com/medilab-free-medical-bootstrap-theme/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -69,30 +61,6 @@
                   <button type="submit" onclick="payWithPaystack()"> Pay </button>
                 </div>
               </form>
-
-              <!-- <form id="paymentForm">
-                <div class="row">
-                  <div class="col-md-6 form-group">
-                    <input type="text" name="first_name" class="form-control" id="first-name" placeholder="First Name" />
-                  </div>
-                  <div class="col-md-6 form-group mt-3 mt-md-0">
-                    <input type="text" class="form-control" name="last_name" id="last-name" placeholder="Last Name" />
-                  </div>
-                </div>
-                <div class="form-group mt-3">
-                  <input type="email" class="form-control" name="email" id="email-address" placeholder="Email Adress" />
-                </div>
-                <div class="form-group mt-3">
-                  <input type="text" class="form-control" name="password" id="amount" placeholder="Amount" />
-                </div>
-
-                <div class="my-3">
-                  <button type="submit" name="pay" onclick="payWithPaystack()">Pay</button>
-                  <span>Existing User?
-                    <a href="index.php" style="color: red">
-                      Sign in here</a></span>
-                </div> 
-              </form>-->
             </div>
           </div>
         </div>
@@ -121,11 +89,15 @@
     var paymentForm = document.getElementById('paymentForm');
     paymentForm.addEventListener('submit', payWithPaystack, false);
 
+
+
     function payWithPaystack(e) {
       e.preventDefault();
       var handler = PaystackPop.setup({
-        key: 'pk_test_73bdc14d9dbc2675722cc2ad4590a8a7cf430cfe', // Replace with your public key
+        key: 'pk_test_da94e27ff3fa3950bddde2d50d77ddf9740c88b6', // Replace with your public key
         email: document.getElementById('email-address').value,
+        first_name: document.getElementById('first-name').value,
+        last_name: document.getElementById('last-name').value,
         amount: document.getElementById('amount').value * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
         currency: 'NGN', // Use GHS for Ghana Cedis or USD for US Dollars
         ref: Math.floor((Math.random() * 10000000) + 1), // Replace with a reference you generated

@@ -1,4 +1,8 @@
 <?php
+require_once('classes/dbconnection.php');
+$newobject = new Db();
+$conn = $newobject->connect();
+
 $ref = $_GET['ref'];
 
 
@@ -6,7 +10,7 @@ $ref = $_GET['ref'];
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-    CURLOPT_URL => "https://api.paystack.co/transaction/verify/" . rawurlencode($ref),
+    CURLOPT_URL => "https://api.paystack.co/transaction/verify/$ref",
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => "",
     CURLOPT_MAXREDIRS => 10,
@@ -23,41 +27,48 @@ curl_setopt_array($curl, array(
 
 
 $response = curl_exec($curl);
-var_dump($response);
-die($ref);
+//var_dump($response);
+//die($ref);
 $err = curl_error($curl);
 curl_close($curl);
 
 if ($err) {
     echo "cURL Error #:" . $err;
 } else {
-    echo $response;
+    //echo $response;
     $result = json_decode($response);
 }
 if ($result->data->status == 'success') {
     $status = $result->data->status;
+
+
     $reference = $result->data->reference;
-    $lname = $result->data->customer->last_name;
-    $fname = $result->data->customer->first_name;
+    //$fname = $result->data->customer->first_name;
+    //$lname = $result->data->customer->last_name;
     $email = $result->data->customer->email;
+    $amount = $result->data->amount;
 
-    $date_default =  date("Y-m-d H:i:s");
+    // $date_default =  date("Y-m-d H:i:s");
 
-    $sql = "insert into transactions( email, status, transactionReference,createdAt) values(:em, :st, :tf, :ca )";
+    $sql = "insert into transactions( amount, status, reference, email) values(:am, :st, :rf, :em )";
     $stmt = $conn->prepare($sql);
     //Insert Data to payment Data
-    $stmt->bindValue(":em", $email);
+    $stmt->bindValue(":am", $amount);
     $stmt->bindValue(":st", $status);
-    $stmt->bindValue(":tf", $reference);
-    $stmt->bindValue(":ca", $date_default);
+    $stmt->bindValue(":rf", $reference);
+    $stmt->bindValue(":em", $email);
 
     $stmt->execute();
     if (!$stmt) {
         echo "Error Query Failed ";
     } else {
+
         header("Location:success.php?status=success");
         exit;
     }
 } else {
     header("Location:error.php");
 }
+
+$sql = "SELECT  users.first_name, users.last_name, transactions.amount, transactions.date FROM 
+users JOIN transactions ON users.email = transactions.email where users.email = '?";
